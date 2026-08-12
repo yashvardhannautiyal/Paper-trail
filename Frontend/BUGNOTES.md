@@ -108,3 +108,36 @@ So changes I have made :
 ### How you verified the behavior after the fix
 - So now when I started the app again and searched for the book name it responded for the current value only and the older search value was not displayed over it
 - Also when i empty the search input it did not showed the result for previous searched book
+
+
+
+
+
+----
+# BUG 4 - finished-toggle defect
+
+### Symptom
+- So when I started the app and whenever I marked the book as finished the toggle did not worked
+
+- Also when I marked the already finished book toggle button it did not wroked either
+
+### Root cause
+- the function `toggleFinished()` directly changes the state due to which whenever we click on the book object it is changing directly from `finished = true` => to => `finished = false`
+
+- also after changing the book state, we are passing the same older book in the array due to which toggle is not changing.
+
+
+### Why the fix is correct
+So in the code :
+- I have created a `map()` that creates a new array 
+
+- if finds the correct book to update; `e.id === x.id`
+
+- `{...book, finished: !e.finished}` When the book is found the spread operator copies the same values and marks finished to it's reversed value
+
+- now whenever we toggle the book it changes from `finished: true` to `finished : false` and vice versa
+
+
+
+### How you verified the behavior after the fix
+- So after I restarted the app whenever I toggle the button for finished it changes the book from `finished: true` to `finished : false` and vice versa

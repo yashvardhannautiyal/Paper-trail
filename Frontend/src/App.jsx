@@ -112,10 +112,17 @@ export default function App() {
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const shown = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  function toggleFinished(x) {
-    x.finished = !x.finished;
-    setBooks(books);
-  }
+
+  // ---------- 4 toggle change defect --------------------
+ function toggleFinished(x) {
+  setBooks(
+    books.map((e) =>
+      e.id === x.id //checks for the book
+        ? { ...e, finished: !e.finished } //if found reverse the finished toggle value
+        : e //else keeps it same
+    )
+  );
+}
 
   function removeBook(x) {
     setBooks(books.filter((it) => it.id !== x.id));
