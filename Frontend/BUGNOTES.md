@@ -34,6 +34,7 @@ The reason for the bug is that :
 
 
 
+---
 
 # BUG 2 - Page reset to 1 when search or change genre
 
@@ -66,3 +67,44 @@ The reason for no change in page is :
 - So whenever the user `search` or change `genre` the page becomes 1 as the dependencies are changed and the `useEffect` runs.
 
 - And whenever we go from `page 1 -> 2` then the dependencies are neither changed and the effect does not run therefore the page remains same.
+
+
+### How you verified the behavior after the fix
+- So when I started the app again and changed the page the page did changed from page 1 -> 2 which was the defect earlier
+
+- Also now when I search or filter the genre; even if I am on 2nd page the app moved it to Page 1 itself as the values of the states in dependency array are now changed.
+
+
+---
+# BUG 3 - Async server-search race 
+
+### Symptom
+- So when I entered values in the `search` it showed response for the previous searched value later.
+
+
+### Root cause
+
+The main reason I observed for the behaviour is : 
+ -  longer queries answer faster because in the `useEffect`
+
+` lookupBooks(query, books).then((found) => setServerMatches(found));` : every request is allowed to update the state
+
+- Therefore, if we search "hello" and the previous state has "hell" so even though it has matches for "hello" it will still find for "hell" and show response for older search.
+
+- This is called "Race condition", where the async operations run at the same time and final result depends on which one finishes first.
+
+### Why the fix is correct
+
+So changes I have made : 
+- I have created a variable `doNot = false` initially; that will ensure that the state need to be updated or not .
+
+- when the user changes the search, the previous effect cleans up
+
+- the request is marked as doNot adn when the request is completed the result is not calculated if it is not current request.
+
+- only the current request search is allowed to update the `serverMatches`
+
+
+### How you verified the behavior after the fix
+- So now when I started the app again and searched for the book name it responded for the current value only and the older search value was not displayed over it
+- Also when i empty the search input it did not showed the result for previous searched book

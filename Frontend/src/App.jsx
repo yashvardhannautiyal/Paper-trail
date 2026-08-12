@@ -81,13 +81,30 @@ export default function App() {
     setPage(1); // back to page 1 whenever the view changes
   }, [query, genreFilter]);
 
+
+  // ---------- 3 async server-search race --------------------
   useEffect(() => {
     if (query.trim() === "") {
       setServerMatches(null);
       return;
     }
-    lookupBooks(query, books).then((found) => setServerMatches(found));
+
+    let doNot = false; //initally 
+
+    //request finishes lookupBooks
+    lookupBooks(query, books).then((found) =>{
+      if(!doNot){ //if true do not update state
+      setServerMatches(found) }
+  });
+
+  return () => {
+    doNot = true; //sets to true => now the state will not be updated
+  }
   }, [query, books]);
+
+
+
+
 
   const visible = books
     .filter((x) => x.title.toLowerCase().includes(query.toLowerCase()))
