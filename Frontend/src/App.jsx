@@ -191,9 +191,9 @@ export default function App() {
         </p>
       )}
       <ul className="rows">
-        {shown.map((x, index) => (
+        {shown.map((x) => (
           <BookRow
-            key={index}
+            key={x.id}
             book={x}
             onToggle={() => toggleFinished(x)}
             onRemove={() => removeBook(x)}

@@ -139,5 +139,22 @@ So in the code :
 
 
 
+
+
+# BUG 5 - list identity/remount defect
+
+### Symptom
+Row notes could move to the wrong book after filtering, deleting, or paging.
+
+### Root Cause
+- I observed that in `<ul>` the `key = {index}` was given which was the index of the array.
+- whereas the key for particular had a unique id `id: Date.now(),` defined in `newBookForm`
+- therefore i changed it to `key = {x.id}`
+
+
+### Why the fix is correct
+- So the key for particular had a unique id `id: Date.now(),` defined in `newBookForm`
+- therefore i changed it to `key = {x.id}`
+
 ### How you verified the behavior after the fix
-- So after I restarted the app whenever I toggle the button for finished it changes the book from `finished: true` to `finished : false` and vice versa
+- So now when I restarted the app while filtering, deleting notes remain attached to the correct book.
