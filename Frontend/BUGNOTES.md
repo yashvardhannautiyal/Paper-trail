@@ -30,3 +30,39 @@ The reason for the bug is that :
 ### How you verified the behavior after the fix
 - So i started the app again and observed that the timer is running effeciantly and updates the time every second the user is accessing the app
 - Also on every refresh the timer becomes 0 and then updates itself
+
+
+
+
+
+# BUG 2 - Page reset to 1 when search or change genre
+
+### Symptom
+- As I observed further in the app, the pages were not changing. 
+
+- Whenever I clicked on `next` button the page did not moved to next page that is to page 2. It remains at Page 1 only.
+
+
+
+### Root cause
+The reason for no change in page is :
+
+- `const activeView = { search: query, genre: genreFilter };` : it is an object so at each render this line executes and sets to it's inital state.
+
+- That is why in `useEffect` 
+
+        useEffect(() => {
+        setPage(1); // back to page 1 whenever the view changes
+        }, [activeView]);
+
+- in dependency array `activeView` is passed so whenever the values are changed then at every render the object becomes same as it's inital value.
+
+- so whenever `setPage(1)` is changed the react re-renders the values and when we try to change the page the values remains same due to which the page remains at `Page 1`
+
+
+### Why the fix is correct
+- So to remove this error I passed the states `query` and `genreFilter` in the dependency array.
+
+- So whenever the user `search` or change `genre` the page becomes 1 as the dependencies are changed and the `useEffect` runs.
+
+- And whenever we go from `page 1 -> 2` then the dependencies are neither changed and the effect does not run therefore the page remains same.

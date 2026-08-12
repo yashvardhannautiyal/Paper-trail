@@ -73,11 +73,13 @@ export default function App() {
     return () => clearInterval(tick);
   }, []);
 
+
+  // ---------- 2 Pagination reset --------------------
   const activeView = { search: query, genre: genreFilter };
 
   useEffect(() => {
     setPage(1); // back to page 1 whenever the view changes
-  }, [activeView]);
+  }, [query, genreFilter]);
 
   useEffect(() => {
     if (query.trim() === "") {
