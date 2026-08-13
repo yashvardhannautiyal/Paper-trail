@@ -137,7 +137,9 @@ So in the code :
 
 - now whenever we toggle the book it changes from `finished: true` to `finished : false` and vice versa
 
-
+### How you verified the behavior after the fix
+- So when I restarted the fixed app I notices that when we toggle the finished button then the book becomes un-finished and vice versa
+- also now the books id behaves correctly
 
 
 

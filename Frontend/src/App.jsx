@@ -52,7 +52,7 @@ function lookupBooks(q, books) {
   });
 }
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 5;
 
 export default function App() {
   const [books, setBooks] = useState(STARTING_BOOKS);
@@ -75,7 +75,6 @@ export default function App() {
 
 
   // ---------- 2 Pagination reset --------------------
-  const activeView = { search: query, genre: genreFilter };
 
   useEffect(() => {
     setPage(1); // back to page 1 whenever the view changes
