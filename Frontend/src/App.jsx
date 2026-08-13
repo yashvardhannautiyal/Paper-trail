@@ -128,46 +128,35 @@ export default function App() {
     setBooks(books.filter((it) => it.id !== x.id));
   }
 
-  function NewBookForm() {
-    function submit(e) {
-      e.preventDefault();
-      if (draftText.trim() === "" || Number(draftNum) <= 0) return;
-      setBooks([
-        {
-          id: Date.now(),
-          title: draftText.trim(),
-          genre: "Fiction",
-          pages: Number(draftNum),
-          finished: false,
-        },
-        ...books,
-      ]);
-      setDraftText("");
-      setDraftNum("");
-    }
-    return (
-      <form className="new-entry" onSubmit={submit}>
-        <input
-          placeholder="Book title"
-          value={draftText}
-          onChange={(e) => setDraftText(e.target.value)}
-        />
-        <input
-          placeholder="Pages"
-          type="number"
-          value={draftNum}
-          onChange={(e) => setDraftNum(e.target.value)}
-        />
-        <button type="submit">Add book</button>
-      </form>
-    );
+
+  //-------------BUG 6 - nested component -------------
+  function handleAddBook(title, pages){
+    setBooks((currentBooks) => [
+      {
+        id: Date.now(),
+        title,
+        genre: "Fiction",
+        pages,
+        finished: false,
+      },
+      ...currentBooks,
+    ]);
+
+    setDraftText("");
+    setDraftNum("");
   }
+
 
   return (
     <div className="app">
       <h1>Paper Trail</h1>
       <p className="timer">Time on page: {secondsOpen}s</p>
-      <NewBookForm />
+      {/* -----------6 nested function (props passed) --------------  */}
+      <NewBookForm draftText={draftText}
+      setDraftText={setDraftText}
+      draftNum={draftNum}
+      setDraftNum={setDraftNum}
+      onAddBook={handleAddBook}/>
       <div className="filters">
         <input
           placeholder="Search books…"
@@ -237,5 +226,53 @@ function BookRow({ book, onToggle, onRemove }) {
       />
       <button onClick={onRemove}>Remove</button>
     </li>
+  );
+}
+
+
+
+// NewBookForm component 
+function NewBookForm({
+  draftText,
+  setDraftText,
+  draftNum,
+  setDraftNum,
+  onAddBook,
+}) {
+  function submit(e) {
+    e.preventDefault();
+
+    if (
+      draftText.trim() === "" ||
+      Number(draftNum) <= 0
+    ) {
+      return;
+    }
+
+    onAddBook(
+      draftText.trim(),
+      Number(draftNum)
+    );
+  }
+
+  return (
+    <form className="new-entry" onSubmit={submit}>
+      <input
+        placeholder="Book title"
+        value={draftText}
+        onChange={(e) => setDraftText(e.target.value)}
+      />
+
+      <input
+        placeholder="Pages"
+        type="number"
+        value={draftNum}
+        onChange={(e) => setDraftNum(e.target.value)}
+      />
+
+      <button type="submit">
+        Add book
+      </button>
+    </form>
   );
 }

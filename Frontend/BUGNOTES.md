@@ -158,3 +158,38 @@ Row notes could move to the wrong book after filtering, deleting, or paging.
 
 ### How you verified the behavior after the fix
 - So now when I restarted the app while filtering, deleting notes remain attached to the correct book.
+
+
+
+
+
+---
+# BUG 6 - nested component defect
+
+### Symptom
+- So the `NewBookForm()` component  was declared inside `App()`
+
+- Whenever app() was rendered the the `NewBookForm() component` function was created.
+
+### Root Cause
+- So when I observed in the code it was given that `NewBookForm() component` is inside `App()` so whenever the app renders and creates a new object for the function.
+
+- the data inside `newBookForm` that is saved locally is reset whenevr app is rendered.
+
+- Also here timer() function is running so every second app renders again due to which each time new object of function `newBookForm` is created.
+
+
+### Why the fix is correct
+- So first of all I moved the `NewBookForm()` outside the `App()`. Because of this the `NewBookForm()` function values will stay stable.
+
+- Now at each render the `NewBookForm()` component remains same
+
+- Also as `NewBookForm()` is outside app so I passed props to it.
+
+- Also i created a function as `addBook` as `NewBookForm` is outside App so it does not have data about books, setBooks so to handle the updation of books state i have created `addBook function`
+
+
+### How you verified the behavior after the fix
+- started the app after fixing the defect
+- Entered the book title and page count into the form
+- onAdding the book the recently added book id displayed at the top of the page
