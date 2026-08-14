@@ -55,7 +55,21 @@ function lookupBooks(q, books) {
 const PAGE_SIZE = 5;
 
 export default function App() {
-  const [books, setBooks] = useState(STARTING_BOOKS);
+  //Persist books in localStorage
+  const [books, setBooks] = useState(() => {
+    const savedBooks = localStorage.getItem("books");
+
+    return savedBooks ? JSON.parse(savedBooks) : STARTING_BOOKS;
+  });
+
+
+  useEffect(() =>{
+    localStorage.setItem("books", JSON.stringify(books)
+    ); //effect runs when books array change
+  }, [books]); //when we add new book - books array change
+
+
+
   const [query, setQuery] = useState("");
   const [genreFilter, setGenreFilter] = useState("All");
   const [page, setPage] = useState(1);
