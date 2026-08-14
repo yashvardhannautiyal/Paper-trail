@@ -118,11 +118,14 @@ export default function App() {
 
 
 
-
+  // Y - total visible books count after filter/search
   const visible = books
-    .filter((x) => x.title.toLowerCase().includes(query.toLowerCase()))
-    .filter((x) => genreFilter === "All" || x.genre === genreFilter);
+    .filter((x) => x.title.toLowerCase().includes(query.toLowerCase())) //search
+    .filter((x) => genreFilter === "All" || x.genre === genreFilter);  //filter
+    // page count 
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+
+  //  X - books shown count - count shows books for per page
   const shown = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
 
@@ -192,6 +195,8 @@ export default function App() {
           Server search: {serverMatches.length} match(es) for “{query}”
         </p>
       )}
+      {/* show X of Y books  */}
+      <p>Showing {shown.length} of {visible.length} books</p>
       <ul className="rows">
         {shown.map((x) => (
           <BookRow
