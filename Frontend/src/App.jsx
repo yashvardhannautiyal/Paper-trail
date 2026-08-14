@@ -62,13 +62,9 @@ export default function App() {
     return savedBooks ? JSON.parse(savedBooks) : STARTING_BOOKS;
   });
 
-
-  useEffect(() =>{
-    localStorage.setItem("books", JSON.stringify(books)
-    ); //effect runs when books array change
+  useEffect(() => {
+    localStorage.setItem("books", JSON.stringify(books)); //effect runs when books array change
   }, [books]); //when we add new book - books array change
-
-
 
   const [query, setQuery] = useState("");
   const [genreFilter, setGenreFilter] = useState("All");
@@ -87,13 +83,11 @@ export default function App() {
     return () => clearInterval(tick);
   }, []);
 
-
   // ---------- 2 Pagination reset --------------------
 
   useEffect(() => {
     setPage(1); // back to page 1 whenever the view changes
   }, [query, genreFilter]);
-
 
   // ---------- 3 async server-search race --------------------
   useEffect(() => {
@@ -102,51 +96,49 @@ export default function App() {
       return;
     }
 
-    let doNot = false; //initally 
+    let doNot = false; //initally
 
     //request finishes lookupBooks
-    lookupBooks(query, books).then((found) =>{
-      if(!doNot){ //if true do not update state
-      setServerMatches(found) }
-  });
+    lookupBooks(query, books).then((found) => {
+      if (!doNot) {
+        //if true do not update state
+        setServerMatches(found);
+      }
+    });
 
-  return () => {
-    doNot = true; //sets to true => now the state will not be updated
-  }
+    return () => {
+      doNot = true; //sets to true => now the state will not be updated
+    };
   }, [query, books]);
-
-
-
 
   // Y - total visible books count after filter/search
   const visible = books
     .filter((x) => x.title.toLowerCase().includes(query.toLowerCase())) //search
-    .filter((x) => genreFilter === "All" || x.genre === genreFilter);  //filter
-    // page count 
+    .filter((x) => genreFilter === "All" || x.genre === genreFilter); //filter
+  // page count
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
 
   //  X - books shown count - count shows books for per page
   const shown = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-
   // ---------- 4 toggle change defect --------------------
- function toggleFinished(x) {
-  setBooks(
-    books.map((e) =>
-      e.id === x.id //checks for the book
-        ? { ...e, finished: !e.finished } //if found reverse the finished toggle value
-        : e //else keeps it same
-    )
-  );
-}
+  function toggleFinished(x) {
+    setBooks(
+      books.map(
+        (e) =>
+          e.id === x.id //checks for the book
+            ? { ...e, finished: !e.finished } //if found reverse the finished toggle value
+            : e, //else keeps it same
+      ),
+    );
+  }
 
   function removeBook(x) {
     setBooks(books.filter((it) => it.id !== x.id));
   }
 
-
   //-------------BUG 6 - nested component -------------
-  function handleAddBook(title, pages){
+  function handleAddBook(title, pages) {
     setBooks((currentBooks) => [
       {
         id: Date.now(),
@@ -162,17 +154,18 @@ export default function App() {
     setDraftNum("");
   }
 
-
   return (
     <div className="app">
       <h1>Paper Trail</h1>
       <p className="timer">Time on page: {secondsOpen}s</p>
       {/* -----------6 nested function (props passed) --------------  */}
-      <NewBookForm draftText={draftText}
-      setDraftText={setDraftText}
-      draftNum={draftNum}
-      setDraftNum={setDraftNum}
-      onAddBook={handleAddBook}/>
+      <NewBookForm
+        draftText={draftText}
+        setDraftText={setDraftText}
+        draftNum={draftNum}
+        setDraftNum={setDraftNum}
+        onAddBook={handleAddBook}
+      />
       <div className="filters">
         <input
           placeholder="Search books…"
@@ -196,7 +189,9 @@ export default function App() {
         </p>
       )}
       {/* show X of Y books  */}
-      <p>Showing {shown.length} of {visible.length} books</p>
+      <p>
+        Showing {shown.length} of {visible.length} books
+      </p>
       <ul className="rows">
         {shown.map((x) => (
           <BookRow
@@ -247,9 +242,7 @@ function BookRow({ book, onToggle, onRemove }) {
   );
 }
 
-
-
-// NewBookForm component 
+// NewBookForm component
 function NewBookForm({
   draftText,
   setDraftText,
@@ -260,18 +253,17 @@ function NewBookForm({
   function submit(e) {
     e.preventDefault();
 
-    if (
-      draftText.trim() === "" ||
-      Number(draftNum) <= 0
-    ) {
+    if (draftText.trim() === "" || Number(draftNum) <= 0) {
       return;
     }
 
-    onAddBook(
-      draftText.trim(),
-      Number(draftNum)
-    );
+    onAddBook(draftText.trim(), Number(draftNum));
   }
+  // Add book validation
+  const titleInvalid = draftText.trim() === "";
+  const pagesInvalid = draftNum === "" || Number(draftNum) <= 0;
+
+  const formInvalid = titleInvalid || pagesInvalid;
 
   return (
     <form className="new-entry" onSubmit={submit}>
@@ -288,7 +280,11 @@ function NewBookForm({
         onChange={(e) => setDraftNum(e.target.value)}
       />
 
-      <button type="submit">
+      {/* inline validation message  */}
+      {titleInvalid && <p>Book title is required.</p>}
+      {pagesInvalid && <p>Book pages must be greater than 0.</p>}
+
+      <button type="submit" disabled={formInvalid}>
         Add book
       </button>
     </form>

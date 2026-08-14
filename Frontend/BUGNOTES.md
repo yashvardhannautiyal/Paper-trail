@@ -171,24 +171,24 @@ Row notes could move to the wrong book after filtering, deleting, or paging.
 ### Symptom
 - So the `NewBookForm()` component  was declared inside `App()`
 
-- Whenever app() was rendered the the `NewBookForm() component` function was created.
+- Whenever app() was rendered the the `NewBookForm() component` the form's local state did not remain stable.
+
+- due to this user's entered value disappeard
 
 ### Root Cause
-- So when I observed in the code it was given that `NewBookForm() component` is inside `App()` so whenever the app renders and creates a new object for the function.
+- So when I observed in the code it was given that `NewBookForm() component` is inside `App()` so whenever the app renders due to which `NewBookForm()` local state was not stable
 
-- the data inside `newBookForm` that is saved locally is reset whenevr app is rendered.
-
-- Also here timer() function is running so every second app renders again due to which each time new object of function `newBookForm` is created.
+- Also here `timer()` function is running; so every second app renders again due to which each time the react app is re-remdered
 
 
 ### Why the fix is correct
-- So first of all I moved the `NewBookForm()` outside the `App()`. Because of this the `NewBookForm()` function values will stay stable.
+- So first of all I moved the `NewBookForm()` outside the `App()`. Because of this the `NewBookForm()` function values will stay stable evem if the app is re-render.
 
-- Now at each render the `NewBookForm()` component remains same
+- Now at each render the `NewBookForm()` component remains stable and also at every timer() change the state remains stable.
 
 - Also as `NewBookForm()` is outside app so I passed props to it.
 
-- Also i created a function as `addBook` as `NewBookForm` is outside App so it does not have data about books, setBooks so to handle the updation of books state i have created `addBook function`
+- Also i created a function as `handleAddBook` as `NewBookForm` is outside App so it calls the `handleAddBook`function when a valid book is submitted. 
 
 
 ### How you verified the behavior after the fix
