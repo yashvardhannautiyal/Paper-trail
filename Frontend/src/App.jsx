@@ -59,9 +59,27 @@ export default function App() {
   const [books, setBooks] = useState(() => {
     const savedBooks = localStorage.getItem("books");
 
-    return savedBooks ? JSON.parse(savedBooks) : STARTING_BOOKS;
+    //first start - no saved data 
+    if(!savedBooks){
+      return STARTING_BOOKS;
+    }
+
+    // existing data : load it first
+    try{
+      const parsedBooks = JSON.parse(savedBooks);
+
+      if(!Array.isArray(parsedBooks)){
+      return STARTING_BOOKS;  
+      }
+
+      return parsedBooks;
+    } catch(err){
+      console.error("Invalid books", err);
+      return STARTING_BOOKS;
+    }
   });
 
+  //save books whenever books array change
   useEffect(() => {
     localStorage.setItem("books", JSON.stringify(books)); //effect runs when books array change
   }, [books]); //when we add new book - books array change
