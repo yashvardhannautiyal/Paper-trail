@@ -136,6 +136,15 @@ export default function App() {
   // page count
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
 
+
+  // useEffect() - as pageCount is calculated from books, query, genreFilter(values change over time)
+  useEffect(() =>{ 
+    if(page > pageCount){
+      setPage(pageCount);// runs - when page, pageCount change 
+    }
+  }, [page, pageCount]);
+
+
   //  X - books shown count - count shows books for per page
   const shown = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
