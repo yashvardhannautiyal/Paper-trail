@@ -59,21 +59,21 @@ export default function App() {
   const [books, setBooks] = useState(() => {
     const savedBooks = localStorage.getItem("books");
 
-    //first start - no saved data 
-    if(!savedBooks){
+    //first start - no saved data
+    if (!savedBooks) {
       return STARTING_BOOKS;
     }
 
     // existing data : load it first
-    try{
+    try {
       const parsedBooks = JSON.parse(savedBooks);
 
-      if(!Array.isArray(parsedBooks)){
-      return STARTING_BOOKS;  
+      if (!Array.isArray(parsedBooks)) {
+        return STARTING_BOOKS;
       }
 
       return parsedBooks;
-    } catch(err){
+    } catch (err) {
       console.error("Invalid books", err);
       return STARTING_BOOKS;
     }
@@ -136,14 +136,12 @@ export default function App() {
   // page count
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
 
-
   // useEffect() - as pageCount is calculated from books, query, genreFilter(values change over time)
-  useEffect(() =>{ 
-    if(page > pageCount){
-      setPage(pageCount);// runs - when page, pageCount change 
+  useEffect(() => {
+    if (page > pageCount) {
+      setPage(pageCount); // runs - when page, pageCount change
     }
   }, [page, pageCount]);
-
 
   //  X - books shown count - count shows books for per page
   const shown = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -299,7 +297,8 @@ function NewBookForm({
         value={draftText}
         onChange={(e) => setDraftText(e.target.value)}
       />
-
+      {/* inline validation message - title input   */}
+      {titleInvalid && <p>Book title is required.</p>}
       <input
         placeholder="Pages"
         type="number"
@@ -307,8 +306,8 @@ function NewBookForm({
         onChange={(e) => setDraftNum(e.target.value)}
       />
 
-      {/* inline validation message  */}
-      {titleInvalid && <p>Book title is required.</p>}
+      {/* inline validation message - pages input  */}
+
       {pagesInvalid && <p>Book pages must be greater than 0.</p>}
 
       <button type="submit" disabled={formInvalid}>

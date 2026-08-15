@@ -166,32 +166,37 @@ Row notes could move to the wrong book after filtering, deleting, or paging.
 
 
 ---
-# BUG 6 - nested component defect
+# BUG 6 - Unstable component identity from defining a component inside another component
 
 ### Symptom
-- So the `NewBookForm()` component  was declared inside `App()`
+- `NewBookForm` component was originally defined inside the `App` component
 
-- Whenever app() was rendered the the `NewBookForm() component` the form's local state did not remain stable.
+- When the `App` component re-rendered, the `NewBookForm` function was recreated.
 
-- due to this user's entered value disappeard
+- because of this new existaing instance of `NewBookForm` was unmounted and new instance was maounted
+
+- Due to this, the form's local state could reset and the user's entered values disappeared
 
 ### Root Cause
-- So when I observed in the code it was given that `NewBookForm() component` is inside `App()` so whenever the app renders due to which `NewBookForm()` local state was not stable
+- As the `NewBookForm` was defined inside `app` due to which the component was unstable.
 
-- Also here `timer()` function is running; so every second app renders again due to which each time the react app is re-remdered
+- Every time `App` re-rendered, a new `NewBookForm` function was created
+
+- The app re-rendered every second because the timer updated `secibdsOpen` using `setSecondsOpen`. Therefore, the nested `NewBookForm` recieved a new component identity every second.
 
 
 ### Why the fix is correct
-- So first of all I moved the `NewBookForm()` outside the `App()`. Because of this the `NewBookForm()` function values will stay stable evem if the app is re-render.
+- So first of all I moved the `NewBookForm()` outside the `App()`. Because of this the `NewBookForm()` function values will stay stable even if the app is re-render.
 
-- Now at each render the `NewBookForm()` component remains stable and also at every timer() change the state remains stable.
+- Now the `timer()` updated `secondsOpen` and the `app` re-render without recreating the `NewBookForm` component.
 
-- Also as `NewBookForm()` is outside app so I passed props to it.
+- Also as `NewBookForm()` is outside app so I passed props to it for required state values.
 
-- Also i created a function as `handleAddBook` as `NewBookForm` is outside App so it calls the `handleAddBook`function when a valid book is submitted. 
+- Also i created a function as `handleAddBook` and passed it to `NewBookForm` as it is outside App so it calls the `handleAddBook` function when a valid book is submitted. 
 
 
 ### How you verified the behavior after the fix
 - started the app after fixing the defect
 - Entered the book title and page count into the form
-- onAdding the book the recently added book id displayed at the top of the page
+- Added the book and waited for the timer to update and when the app re-rendered the new book was available.
+- This verified the new book is added successfully and the data is saved in the local storage.
